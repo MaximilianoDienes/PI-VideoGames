@@ -1,4 +1,9 @@
 
+const isValidImageURL = (value) => {
+    const imageExtensions = /\.(jpeg|jpg|png|gif|bmp|tiff|tif|webp|svg)$/i;
+    return imageExtensions.test(value);
+  };
+
 const Validation = ({name, description, platforms, image, releasedate, rating, genres}) => {
     const errors = {};
 
@@ -14,12 +19,12 @@ const Validation = ({name, description, platforms, image, releasedate, rating, g
         errors.description = "La descripción debe superar los 50 carácteres."
     }
 
-    if (platforms.length < 2) {
+    if (platforms.length === 0) {
         errors.platforms = "Debe especificar una plataforma."
     }
 
-    if (!/^(https?:\/\/[\w.-]+\.\w{2,})/.test(image)) {
-        errors.image = "La imagen debe ser una URL. Es necesario que la ruta empiece con 'http://' o 'https://'."
+    if (!/^(https?:\/\/[\w.-]+\.\w{2,})/.test(image) || !isValidImageURL(image)) {
+        errors.image = "La imagen debe ser una URL. Es necesario que la ruta empiece con 'http://' o 'https://'. Debe ser un formato compatible (JPEG, JPG, PNG, GIF, BMP, TIFF, TIF, WEBP, SVG.)"
     }
 
     if (!(/^(?:\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(releasedate))) {

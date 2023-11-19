@@ -1,5 +1,25 @@
 const { Videogame } = require('../db.js');
 const { Genre } = require('../db.js');
+const sizeOf = require('image-size');
+const fetch = require('node-fetch');
+
+const isValidImageUrl = async (url) => {
+    try {
+        const { protocol } = new URL(url);
+
+        if (protocol !== 'http:' && protocol !== 'https:') {
+            return false;
+        }
+
+        const response = await fetch(url);
+        const buffer = await response.buffer();
+        const dimensions = sizeOf(buffer);
+
+        return dimensions.width > 0 && dimensions.height > 0;
+    } catch (error) {
+        return false;
+    }
+};
 
 const postVideoGames = async (req, res) => {
     try {
@@ -9,17 +29,21 @@ const postVideoGames = async (req, res) => {
             res.status(400).json({error: 'Faltan datos'});
         }
 
+        const isValidImage = await isValidImageUrl(image);
+
+        const finalImage = isValidImage ? image : 'https://www.ncenet.com/wp-content/uploads/2020/04/No-image-found.jpg';
+
         const videogame = {
                 name: name,
                 platforms: platforms,
-                image: image,
+                image: finalImage,
                 releasedate: releasedate,
                 rating: rating,
                 description: description
         }
 
         const createdGame = await Videogame.create(videogame);
-        createdGame.addGenre(genres)
+        createdGame.addGenre(genres);
         
 
         res.status(201).json(createdGame);

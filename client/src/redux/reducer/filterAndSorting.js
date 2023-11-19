@@ -19,13 +19,25 @@ export const sortVideoGames = (games, relevanceSort, sort) => {
         });
     }
 
-    if (sort === "alphabetical") {
+    if (sort === "alphabeticalA") {
         return sortedGames.sort((g1, g2) => {
             return g1.name.localeCompare(g2.name);
         });
     }
 
-    if (sort === "rating") {
+    if (sort === "alphabeticalZ") {
+        return sortedGames.sort((g1, g2) => {
+            return g2.name.localeCompare(g1.name);
+        });
+    }
+
+    if (sort === "ratingL") {
+        return sortedGames.sort((g1, g2) => {
+            return g1.rating - g2.rating;
+        });
+    }
+
+    if (sort === "ratingH") {
         return sortedGames.sort((g1, g2) => {
             return g2.rating - g1.rating;
         });
@@ -45,6 +57,15 @@ export const filterVideoGamesBySource = (games, filter) => {
         return newFilteredGames;
     } else if (filter === "api") {
         let newFilteredGames = games.filter((g) => !g.id.toString().includes("-"));
+        return newFilteredGames;
+    }
+}
+
+export const filterVideoGamesByPlatform = (games, filter) => {
+    if (filter === "All") {
+        return games;
+    } else {
+        let newFilteredGames = games.filter((g) => g.platforms.includes(filter));
         return newFilteredGames;
     }
 }

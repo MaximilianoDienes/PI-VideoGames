@@ -1,13 +1,16 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import styles from './Landing.module.css';
 
 const Landing = () => {
   return (
-    <div>
-      <h1>Este es el landing</h1>
+    <div className={styles.background}>
+      <div className={styles.card}>
+      <h1>Welcome!</h1>
       <NavLink to={"/home"}>
-      <button>Ingresar</button>
+      <button className={styles.button}>Sign In</button>
       </NavLink>
+      </div>
     </div>
   )
 }

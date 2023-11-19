@@ -1,0 +1,43 @@
+.selectorContainer1 {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    justify-content: space-evenly;
+}
+
+.selectorContainer2 {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+}
+
+.genreContainer {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-top: 5px;
+}
+
+.genre {
+    margin-top: 2.5px;
+    margin-bottom: 2.5px;
+}
+
+.button {
+    width: 100%;
+    background-color: rgb(33, 37, 41);
+    color: white;
+    padding: 5px 0px;
+    margin-bottom: 2px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+span.button {
+    text-align: center;
+    color: rgb(33, 37, 41);
+    background-color: rgb(233, 236, 239);
+    cursor: default;
+}

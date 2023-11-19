@@ -1,5 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
-import Navbar from "./components/navbar/Navbar";
+import { Routes, Route } from "react-router-dom";
 import Landing from "./views/landing/Landing";
 import Home from "./views/home/Home";
 import Form from "./views/create/Create";
@@ -7,14 +6,8 @@ import Detail from "./views/detail/Detail";
 
 
 function App() {
-
-  const location = useLocation().pathname;
-
-  const isSlash = (location === "/")
-
   return (
-    <div className="App">
-      {isSlash ? null : <Navbar/>}
+    <div>
       <Routes>
       <Route path={"/"} element={<Landing></Landing>}></Route>
       <Route exact path={"/home"} element={<Home></Home>}></Route>

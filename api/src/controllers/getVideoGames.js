@@ -14,21 +14,35 @@ const getVideoGames = async (req, res) => {
             while (matchingGames.length <= 15) {
                 const dbGames = await Videogame.findAll({where: {name: {[Op.iLike]: `%${name}%`}}, limit: 15});
 
-                for (const game of dbGames) {
-                    console.log(game)
-                    matchingGames.push(game);
+                if (dbGames.length > 1) {
+                    for (const game of dbGames) {
+                        const genres = game.genres ? game.genres.map(g => g.name).flat() : [];
+                        const videogame = {
+                            id: game.id,
+                            name: game.name,
+                            platforms: game.platforms,
+                            image: game.image,
+                            releasedate: game.releasedate,
+                            rating: game.rating,
+                            description: game.description,
+                            genre: genres
+                        }
+                        matchingGames.push(videogame);
+                    }
                 }
 
                 for (const videogameData of response.data.results) {
-                    console.log(videogameData);
                     const platforms = videogameData.platforms.map(p => p.platform.name).join(", ");
+                    const genres = videogameData.genres.map(g => g.name);
+
                     const videogame = {
                         name: videogameData.name,
                         platforms: platforms,
                         image: videogameData.background_image,
                         releasedate: videogameData.released,
+                        genre: genres,
                         rating: videogameData.rating,
-                        description: 'placeholder'
+                        description: videogameData.description
                     }
         
                     matchingGames.push(videogame);
@@ -56,7 +70,7 @@ const getVideoGames = async (req, res) => {
 
             if (dbGames.length > 0) {
                 dbGames.forEach(response => {    
-                    const genres = response.genres ? response.genres.map(g => g.name).flat() : []; 
+                    const genres = response.genres ? response.genres.map(g => g.name).flat() : [];
                     const videogame = {
                         id: response.id,
                         name: response.name,
@@ -71,16 +85,19 @@ const getVideoGames = async (req, res) => {
                 })
             }
 
+            const uniquePlatforms = new Set();
+
             responses.forEach(response => response.data.results.forEach(data => {
-                const platforms = data.platforms.map(p => p.platform.name).join(", ");
+                const platforms = data.platforms.map(p => p.platform.name);
                 const genres = data.genres.map(g => g.name);
+                data.platforms.forEach(p => uniquePlatforms.add(p.platform.name));
     
                 const videogame = {
                     id: data.id,
                     name: data.name,
                     platforms: platforms,
                     image: data.background_image,
-                    releasedate: data.releasedate,
+                    releasedate: data.released,
                     rating: data.rating,
                     genre: genres
                 }
@@ -88,7 +105,9 @@ const getVideoGames = async (req, res) => {
                 allGames.push(videogame);
             }))
 
-            res.status(200).json(allGames);
+            const allPlatforms = Array.from(uniquePlatforms);
+
+            res.status(200).json({allGames, allPlatforms});
         }
     } catch (error) {
         res.status(400).json({error: error.message})

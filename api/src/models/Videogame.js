@@ -1,6 +1,11 @@
 const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 
+const isValidImageURL = (value) => {
+  const imageExtensions = /\.(jpeg|jpg|png|gif|bmp|tiff|tif|webp|svg)$/i;
+  return imageExtensions.test(value);
+};
+
 // Exportamos una funcion que define el modelo
 // Luego le injectamos la conexion a sequelize.
 module.exports = (sequelize) => {
@@ -20,12 +25,20 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     platforms: {
-      type: DataTypes.STRING,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false
     },
     image: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        isUrl: true,
+        isValidImageURL: function(value) {
+          if (!isValidImageURL(value)) {
+            throw new Error('La URL no apunta a una imagen válida');
+          }
+        }
+      }
     },
     releasedate: {
       type: DataTypes.STRING,
@@ -33,7 +46,11 @@ module.exports = (sequelize) => {
     },
     rating: {
       type: DataTypes.FLOAT,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        max: 5,
+        min: 0,    
+      }
     }
   }, {
     timestamps: false

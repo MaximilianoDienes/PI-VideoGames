@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CLEAR_VIDEOGAME_DETAIL, GET_GENRES, GET_VIDEOGAMES, GET_VIDEOGAMES_BY_ID, FILTER_VIDEOGAMES, SORT_VIDEOGAMES, FILTER_VIDEOGAMES_BY_SOURCE, POST_VIDEOGAME, CHANGE_PAGE } from "./action-types";
+import { CLEAR_VIDEOGAME_DETAIL, GET_GENRES, GET_VIDEOGAMES, GET_VIDEOGAMES_BY_ID, FILTER_VIDEOGAMES, SORT_VIDEOGAMES, FILTER_VIDEOGAMES_BY_SOURCE, POST_VIDEOGAME, CHANGE_PAGE, RESET_FILTER_AND_SORT, FILTER_VIDEOGAMES_BY_PLATFORM } from "./action-types";
 
 export const getVideoGames = (name) => {
     return async function (dispatch) {
@@ -114,13 +114,38 @@ export const postVideogame = (gameData) => {
 export const changePage = (page) => {
     return async function (dispatch) {
         try {
-            console.log(page);
             return dispatch({
                 type: CHANGE_PAGE,
                 payload: page
             })
         } catch (error) {
             console.error("Error cambiando de página:", error);
+        }
+    }
+}
+
+export const resetFilterAndSort = () => {
+    return async function (dispatch) {
+        try {
+            return dispatch({
+                type: RESET_FILTER_AND_SORT,
+                payload: null
+            })
+        } catch (error) {
+            console.error("Error eliminando filtro y sorteo:", error)
+        }
+    }
+}
+
+export const filterVideoGamesByPlatform = (platform) => {
+    return async function (dispatch) {
+        try {
+            return dispatch({
+                type: FILTER_VIDEOGAMES_BY_PLATFORM,
+                payload: platform
+            })
+        } catch (error) {
+            console.error("Error filtrando por plataforma:", error)
         }
     }
 }
