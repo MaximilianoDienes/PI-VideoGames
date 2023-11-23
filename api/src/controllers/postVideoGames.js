@@ -5,9 +5,9 @@ const fetch = require('node-fetch');
 
 const isValidImageUrl = async (url) => {
     try {
-        const { protocol } = new URL(url);
+        const { protocol } = new URL(url); 
 
-        if (protocol !== 'http:' && protocol !== 'https:') {
+        if (protocol !== 'http:' && protocol !== 'https:') { // valido que la URL empiece en http o https
             return false;
         }
 
@@ -15,7 +15,7 @@ const isValidImageUrl = async (url) => {
         const buffer = await response.buffer();
         const dimensions = sizeOf(buffer);
 
-        return dimensions.width > 0 && dimensions.height > 0;
+        return dimensions.width > 0 && dimensions.height > 0; // si no existen las dimensiones, significa que la URL no apunta a una imagen válida
     } catch (error) {
         return false;
     }
@@ -31,7 +31,7 @@ const postVideoGames = async (req, res) => {
 
         const isValidImage = await isValidImageUrl(image);
 
-        const finalImage = isValidImage ? image : 'https://www.ncenet.com/wp-content/uploads/2020/04/No-image-found.jpg';
+        const finalImage = isValidImage ? image : 'https://www.ncenet.com/wp-content/uploads/2020/04/No-image-found.jpg'; // si la URL no es válida, usamos la default
 
         const videogame = {
                 name: name,

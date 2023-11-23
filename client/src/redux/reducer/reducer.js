@@ -12,7 +12,8 @@ let initialState = {
     relevanceSort: [],
     allPlatforms: [],
     filterPlatform: "All",
-    page: 1
+    page: 1,
+    allGamesBackupReset: [] // para que funcione el reset cuando hay name query :)
 }
 
 
@@ -20,14 +21,14 @@ let initialState = {
 const rootReducer = (state = initialState, {type, payload}) => {
     switch (type) {
         case GET_VIDEOGAMES:
-            if (state.allGames.length > 0 && state.allPlatforms.length > 0 && state.allGenres.length > 0) {
-                return {...state}
-            } else {
-                if (payload && payload.allPlatforms) {
-                    return {...state, allGames: payload.allGames, filteredGames: payload.allGames, relevanceSort: payload.allGames, allPlatforms: payload.allPlatforms};
-                } else if (payload) {
-                    return {...state, filteredGames: payload};
-                }
+            if (payload.data && payload.name) { // caso name query
+                return {...state, filteredGames: payload.data, relevanceSort: payload.data, allGames: payload.data};
+            }
+            if (state.allGames.length > 0 && state.allPlatforms.length > 0 && state.allGenres.length > 0) { // si ya tenemos todos los juegos de la API, plataformas y géneros
+                return {...state};                                                                          // entonces no modificamos nada
+            }
+            else if (payload && payload.allPlatforms) { // caso normal
+                return {...state, allGames: payload.allGames, filteredGames: payload.allGames, relevanceSort: payload.allGames, allPlatforms: payload.allPlatforms, allGamesBackupReset: payload.allGames};
             }
         
         case GET_VIDEOGAMES_BY_ID:
@@ -80,7 +81,7 @@ const rootReducer = (state = initialState, {type, payload}) => {
             return {...state, page: payload};
         
         case RESET_FILTER_AND_SORT:
-            return {...state, filteredGames: state.allGames, filterGenres: [], sortBy: [], filterPlatform: "All"};
+            return {...state, allGames: state.allGamesBackupReset, filteredGames: state.allGamesBackupReset, relevanceSort: state.allGamesBackupReset, filterGenres: [], sortBy: [], filterPlatform: "All", page: 1};
 
         default:
             return state;

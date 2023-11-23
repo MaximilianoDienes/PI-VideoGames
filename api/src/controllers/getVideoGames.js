@@ -9,9 +9,9 @@ const getVideoGames = async (req, res) => {
 
         if (name) {
             const response = await axios.get(`https://api.rawg.io/api/games?key=${API_KEY}&search=${name}`);
-            const matchingGames = [];
+            const matchingGames = []; 
 
-            while (matchingGames.length <= 15) {
+            while (matchingGames.length <= 15) { // recibo hasta 15, priorizo los de la base de datos (creados por el usuario)
                 const dbGames = await Videogame.findAll({where: {name: {[Op.iLike]: `%${name}%`}}, limit: 15});
 
                 if (dbGames.length > 1) {
@@ -36,6 +36,7 @@ const getVideoGames = async (req, res) => {
                     const genres = videogameData.genres.map(g => g.name);
 
                     const videogame = {
+                        id: videogameData.id,
                         name: videogameData.name,
                         platforms: platforms,
                         image: videogameData.background_image,
@@ -51,7 +52,9 @@ const getVideoGames = async (req, res) => {
 
             if (matchingGames.length === 0) {
                 res.status(400).json({error: "No se encontró ningún videojuego que coincida con el nombre proporcionado."});
-            } else res.status(200).json(matchingGames);
+            } else {
+                res.status(200).json(matchingGames);
+            }
         } 
         
         else {
@@ -65,7 +68,7 @@ const getVideoGames = async (req, res) => {
 
             const allGames = [];
 
-            const responses = await Promise.all(urls.map(url => axios.get(url)));
+            const responses = await Promise.all(urls.map(url => axios.get(url))); // hago req para los juegos de todas las páginas (1 a 5)
             const dbGames = await Videogame.findAll({include: [{ model: Genre, through: 'VideogameGenre'}]});
 
             if (dbGames.length > 0) {
@@ -85,12 +88,12 @@ const getVideoGames = async (req, res) => {
                 })
             }
 
-            const uniquePlatforms = new Set();
-
+            const uniquePlatforms = new Set(); // esto sirve para que no se repita ningun valor,
+                                               // así es como obtengo cada plataforma única para el filtrado !
             responses.forEach(response => response.data.results.forEach(data => {
                 const platforms = data.platforms.map(p => p.platform.name);
                 const genres = data.genres.map(g => g.name);
-                data.platforms.forEach(p => uniquePlatforms.add(p.platform.name));
+                data.platforms.forEach(p => uniquePlatforms.add(p.platform.name)); // :)
     
                 const videogame = {
                     id: data.id,
@@ -105,7 +108,7 @@ const getVideoGames = async (req, res) => {
                 allGames.push(videogame);
             }))
 
-            const allPlatforms = Array.from(uniquePlatforms);
+            const allPlatforms = Array.from(uniquePlatforms); // lo convierto a un array antes de mandarlo
 
             res.status(200).json({allGames, allPlatforms});
         }

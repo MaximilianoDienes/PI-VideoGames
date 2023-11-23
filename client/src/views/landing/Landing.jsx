@@ -6,9 +6,9 @@ const Landing = () => {
   return (
     <div className={styles.background}>
       <div className={styles.card}>
-      <h1>Welcome!</h1>
+      <h1>Bienvenido!</h1>
       <NavLink to={"/home"}>
-      <button className={styles.button}>Sign In</button>
+      <button className={styles.button}>Entrar</button>
       </NavLink>
       </div>
     </div>

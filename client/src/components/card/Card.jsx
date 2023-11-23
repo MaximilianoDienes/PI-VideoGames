@@ -4,7 +4,7 @@ import styles from "./Cards.module.css";
 
 export const Card = ({name, image, genre, id, apiOrClient}) => {
 
-  const formattedGenres = genre ? genre.join(', ') : ''
+  const formattedGenres = genre ? genre.join(', ') : ''; // formateo para los géneros
 
   return (
     <Link to={`/home/${id}`} className={styles.link}>

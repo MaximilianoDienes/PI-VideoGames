@@ -16,7 +16,8 @@ export const Cards = ({filteredGames}) => {
             key={index}
             id={g.id}
             name={g.name} 
-            image={g.image} 
+            image={g.image}
+            imageFile={g.imageFile}
             genre={g.genre}
             apiOrClient={typeof g.id === "string" ? 'CLIENT' : 'API'}
             />

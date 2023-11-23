@@ -8,7 +8,7 @@ export const getVideoGames = (name) => {
                 const response = await axios.get(`http://localhost:3001/videogames?name=${name}`);
                 return dispatch({
                     type: GET_VIDEOGAMES,
-                    payload: response.data})
+                    payload: {data: response.data, name: name}})
             } else { // caso normal
                 const response = await axios.get(`http://localhost:3001/videogames`);
                 return dispatch({

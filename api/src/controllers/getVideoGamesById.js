@@ -6,7 +6,7 @@ const getVideoGamesById = async (req, res) => {
     try {
         const { id } = req.params;
 
-        if (id.includes('-')) {
+        if (id.includes('-')) { // si incluye guíon, es creado por el usuario, entonces lo busco en la DB
             const matchingGame = await Videogame.findOne({where: {id: id}, include: Genre});
             res.status(201).json(matchingGame);
         } 
@@ -26,7 +26,7 @@ const getVideoGamesById = async (req, res) => {
                     genre: genres
             }
 
-            res.status(201).json(videogame);
+            res.status(200).json(videogame);
         }
     } catch (error) {
         res.status(400).json({error: error.message})

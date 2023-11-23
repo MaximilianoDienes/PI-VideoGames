@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { changePage, filterVideoGames, filterVideoGamesByPlatform, filterVideoGamesBySource, resetFilterAndSort, sortVideoGames } from '../../redux/actions/actions';
 import styles from "./Selector.module.css";
 
-const Selector = ({allGenres}) => {
+const Selector = ({allGenres, handleSearchTermReset}) => {
 
     const dispatch = useDispatch()
 
-    const [checkedGenres, setCheckedGenres] = useState([]);
-    const [sortBy, setSortBy] = useState("");
-    const [apiOrClient, setApiOrClient] = useState("both");
-    const [currentPlatform, setCurrentPlatform] = useState("All");
+    const [checkedGenres, setCheckedGenres] = useState(JSON.parse(localStorage.getItem('checkedGenres')) || []); // si no tengo valores para los estados en el storage local
+    const [sortBy, setSortBy] = useState(localStorage.getItem('sortBy') || "");                                  // entonces se inicializan con el caso por default
+    const [apiOrClient, setApiOrClient] = useState(localStorage.getItem('apiOrClient') || "both");
+    const [currentPlatform, setCurrentPlatform] = useState(localStorage.getItem('currentPlatform') || "All");
 
     const allPlatforms = useSelector((state) => state.allPlatforms);
     const page = useSelector((state) => state.page);
@@ -23,7 +23,7 @@ const Selector = ({allGenres}) => {
             alert("Es imposible avanzar, te encuentras en la última página.")
         } else {
             if (e.target.value === "more") {
-                let limit = ((page + 1) - 1) * 20 + 19;
+                let limit = ((page + 1) - 1) * 20 + 19; // esto es para limitar la cantidad de videojuegos por página (20)
                 if (limit <= filteredGames.length) {
                     dispatch(changePage(page + 1))
                 } else {
@@ -39,20 +39,21 @@ const Selector = ({allGenres}) => {
     };
 
     const handleGenreChange = (genre) => {
-        if (checkedGenres.includes(genre)) {
+        if (checkedGenres.includes(genre)) { // si el género ya está en checkedGenres, entonces se elimina
             const newGenreList = checkedGenres.filter((g) => g !== genre);
             setCheckedGenres(newGenreList);
         } else {
-            setCheckedGenres([...checkedGenres, genre]);
+            setCheckedGenres([...checkedGenres, genre]); // si no está, se agrega
         }
     }
 
     const handleReset = () => {
+        handleSearchTermReset();
         setSortBy("");
         setApiOrClient("both");
         setCheckedGenres([]);
-        setCurrentPlatform("All");
-        dispatch(resetFilterAndSort());
+        setCurrentPlatform("All"); // todos los estados vuelven a su valor inicial, y despacho una acción que resetea filteredGames,
+        dispatch(resetFilterAndSort()); // los valores de los filtros y los sorteos en el estado global
     }
 
     const handleSortChange = (e) => {
@@ -67,49 +68,46 @@ const Selector = ({allGenres}) => {
         setCurrentPlatform(e.target.value);
     }
 
-    useEffect(() => {
+    useEffect(() => { // cada vez que cambia el valor de alguno de los estados, lo guardo en el localStorage
+        localStorage.setItem('checkedGenres', JSON.stringify(checkedGenres));   // y despacho una acción
+        localStorage.setItem('sortBy', sortBy);                                 // para cambiar su valor en el estado global
+        localStorage.setItem('apiOrClient', apiOrClient);                       // el propósito del localStorage es poder guardar los valores de los inputs
+        localStorage.setItem('currentPlatform', currentPlatform);               // para que cuando se desmonte y se monte el componente,
+                                                                                // los pueda recuperar rápidamente
         dispatch(filterVideoGames(checkedGenres));
-    }, [checkedGenres]);
-
-    useEffect(() => {
         dispatch(sortVideoGames(sortBy));
-    }, [sortBy])
-
-    useEffect(() => {
         dispatch(filterVideoGamesBySource(apiOrClient));
-    }, [apiOrClient])
-
-    useEffect(() => {
         dispatch(filterVideoGamesByPlatform(currentPlatform));
-    }, [currentPlatform])
+
+    }, [checkedGenres, sortBy, apiOrClient, currentPlatform]);
 
   return (
     <div className={styles.selectorContainer1}>
         <div className={styles.genreContainer}>
-                <label htmlFor='sortBy'>Sort by:</label>
-                <select id='sortBy' name ='sortBy' value={sortBy} onChange={handleSortChange}>
-                    <option value="relevance">Relevance</option>
-                    <option value="releaseDateE">Release Date (earliest to latest)</option>
-                    <option value="releaseDateL">Release Date (latest to earliest)</option>
-                    <option value="alphabeticalA">A to Z</option>
-                    <option value="alphabeticalZ">Z to A</option>
-                    <option value="ratingH">Rating (higher to lower)</option>
-                    <option value="ratingL">Rating (lower to higher)</option>
+                <label htmlFor='sortBy'>Ordenar por:</label>
+                <select id='sortBy' name ='sortBy' value={sortBy} onChange={handleSortChange} className={styles.sortBy}>
+                    <option value="relevance">Relevancia</option>
+                    <option value="releaseDateE">Fecha de lanzamiento (nuevos primero)</option>
+                    <option value="releaseDateL">Fecha de lanzamiento (viejos primero)</option>
+                    <option value="alphabeticalA">Alfabéticamente (A - Z)</option>
+                    <option value="alphabeticalZ">Alfabéticamente (Z - A)</option>
+                    <option value="ratingH">Rating (mayor a menor)</option>
+                    <option value="ratingL">Rating (menor a mayor)</option>
                 </select>
         </div>
         <div className={styles.genreContainer}>
-                <label htmlFor='filterBy'>Filter by:</label>
+                <label htmlFor='filterBy'>Filtrar por:</label>
                 <select id='filterBy' name='filterBy' value={apiOrClient} onChange={handleApiOrClientChange}>
-                    <option value="both">API and Client</option>
+                    <option value="both">API y Cliente</option>
                     <option value="api">API</option>
-                    <option value="client">Client</option>
+                    <option value="client">Cliente</option>
                 </select>
         </div>
 
         <div className={styles.genreContainer}>
-            <label htmlFor='filterByPlatform'>Filter by Platform:</label>
+            <label htmlFor='filterByPlatform'>Filtrar por Plataforma:</label>
             <select id='filterByPlatform' name='filterByPlatform' value={currentPlatform} onChange={handlePlatformChange}>
-                <option key="All" value="All">All</option>
+                <option key="All" value="All">Todas</option>
                 {allPlatforms.map((platform) => (
                     <option key={platform} value={platform}>{platform}</option>
                 ))}
@@ -117,7 +115,7 @@ const Selector = ({allGenres}) => {
         </div>
 
         <div className={styles.genreContainer}>
-            <p>Filter by Genre:</p>
+            <p>Filtrar por género:</p>
                 {allGenres.map((genre) => (
                     <label key={genre.id} className={styles.genre}>
                         <input

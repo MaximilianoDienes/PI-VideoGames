@@ -35,6 +35,10 @@
     cursor: pointer;
 }
 
+.sortBy {
+    width: 100%;
+}
+
 span.button {
     text-align: center;
     color: rgb(33, 37, 41);

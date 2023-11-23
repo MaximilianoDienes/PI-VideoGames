@@ -15,7 +15,7 @@ const Detail = () => {
   useEffect(() => {
     dispatch(getVideoGamesById(id));
     return () => {
-      dispatch(clearVideoGameDetail());
+      dispatch(clearVideoGameDetail()); // limpia el detail cuando desmonto
     }
   }, [dispatch, id])
 
