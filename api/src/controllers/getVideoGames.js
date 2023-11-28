@@ -12,21 +12,20 @@ const getVideoGames = async (req, res) => {
             const matchingGames = []; 
 
             while (matchingGames.length <= 15) { // recibo hasta 15, priorizo los de la base de datos (creados por el usuario)
-                const dbGames = await Videogame.findAll({where: {name: {[Op.iLike]: `%${name}%`}}, limit: 15});
-
-                if (dbGames.length > 1) {
+                const dbGames = await Videogame.findAll({where: { name: { [Op.iLike]: `%${name}%` } }, limit: 15, include: [{ model: Genre, through: 'VideogameGenre' }]});
+                if (dbGames.length) {
                     for (const game of dbGames) {
-                        const genres = game.genres ? game.genres.map(g => g.name).flat() : [];
+                        const genres = game.dataValues.genres ? game.dataValues.genres.map(g => g.name).flat() : [];
                         const videogame = {
-                            id: game.id,
-                            name: game.name,
-                            platforms: game.platforms,
-                            image: game.image,
-                            releasedate: game.releasedate,
-                            rating: game.rating,
-                            description: game.description,
-                            genre: genres
-                        }
+                          id: game.dataValues.id,
+                          name: game.dataValues.name,
+                          platforms: game.dataValues.platforms,
+                          image: game.dataValues.image,
+                          releasedate: game.dataValues.releasedate,
+                          rating: game.dataValues.rating,
+                          description: game.dataValues.description,
+                          genre: genres
+                        };
                         matchingGames.push(videogame);
                     }
                 }
@@ -55,7 +54,7 @@ const getVideoGames = async (req, res) => {
             } else {
                 res.status(200).json(matchingGames);
             }
-        } 
+        }
         
         else {
             const urls = [

@@ -9,10 +9,10 @@ let initialState = {
     filterGenres: [],
     sortBy: [],
     apiOrClient: "both",
-    relevanceSort: [],
-    allPlatforms: [],
+    relevanceSort: [], // sorteado de relevancia original
+    allPlatforms: [], // para filtrar por plataforma !
     filterPlatform: "All",
-    page: 1,
+    page: 1, 
     allGamesBackupReset: [] // para que funcione el reset cuando hay name query :)
 }
 

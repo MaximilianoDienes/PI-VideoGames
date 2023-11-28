@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { changePage, filterVideoGames, filterVideoGamesByPlatform, filterVideoGamesBySource, resetFilterAndSort, sortVideoGames } from '../../redux/actions/actions';
+import { changePage, filterVideoGames, filterVideoGamesByPlatform, filterVideoGamesBySource, getVideoGames, resetFilterAndSort, sortVideoGames } from '../../redux/actions/actions';
 import styles from "./Selector.module.css";
 
 const Selector = ({allGenres, handleSearchTermReset}) => {
@@ -17,22 +17,34 @@ const Selector = ({allGenres, handleSearchTermReset}) => {
     const filteredGames = useSelector((state) => state.filteredGames);
 
     const handlePageChange = (e) => {
-        if (page === 1 && e.target.value === "less") {
-            alert("Te encuentras en la primer página, es imposible retroceder.")
-        } else if (page === 5 && e.target.value === "more") {
-            alert("Es imposible avanzar, te encuentras en la última página.")
-        } else {
-            if (e.target.value === "more") {
-                let limit = ((page + 1) - 1) * 20 + 19; // esto es para limitar la cantidad de videojuegos por página (20)
-                if (limit <= filteredGames.length) {
-                    dispatch(changePage(page + 1))
-                } else {
-                    alert("Esta página se encuentra vacía actualmente, debido a que no hay suficientes videojuegos disponibles por el filtrado elegido.");
-                }
-            } else if (e.target.value === "less") {
-                let limit = ((page - 1) - 1) * 20 + 19;
-                if (page === 1 || limit <= filteredGames.length) {
-                    dispatch(changePage(page - 1))
+        dispatch(changePage(e.target.value));
+    }
+
+    const handlePageIncrement = (e) => {
+        if (e.target.value === "less" || e.target.value === "more") {
+            if (page === 1 && e.target.value === "less") {
+                alert("Te encuentras en la primer página, es imposible retroceder.")
+            } else if (page === 5 && e.target.value === "more") {
+                alert("Es imposible avanzar, te encuentras en la última página.")
+            } else {
+                if (e.target.value === "more") {
+                    let limit = ((page + 1) - 1) * 20 + 19; // esto es para limitar la cantidad de videojuegos por página (20)
+                    let newPage = (page + 1);
+                    if (newPage > 5) {
+                        newPage = 2;
+                        limit = 39;
+                    }
+                    if (limit <= filteredGames.length) {
+                        dispatch(changePage(newPage))
+                    } else {
+                        console.log(page);
+                        alert("Esta página se encuentra vacía actualmente, debido a que no hay suficientes videojuegos disponibles por el filtrado elegido.");
+                    }
+                } else if (e.target.value === "less") {
+                    let limit = ((page - 1) - 1) * 20 + 19;
+                    if (page === 1 || limit <= filteredGames.length) {
+                        dispatch(changePage(page - 1))
+                    }
                 }
             }
         }
@@ -132,8 +144,16 @@ const Selector = ({allGenres, handleSearchTermReset}) => {
         </div>
 
         <div className={styles.selectorContainer2}>
-                <button value={"less"} className={styles.button} onClick={handlePageChange}>Anterior página</button>
-                <button value={"more"} className={styles.button} onClick={handlePageChange}>Próx. página</button>
+                <button value={"less"} className={styles.button} onClick={handlePageIncrement}>Anterior página</button>
+                <button value={"more"} className={styles.button} onClick={handlePageIncrement}>Próx. página</button>
+                <div className={styles.smallButtonContainer}>
+                    <button value={1} className={styles.smallButton} onClick={handlePageChange}>1</button>
+                    <button value={2} className={styles.smallButton} onClick={handlePageChange}>2</button>
+                    <button value={3} className={styles.smallButton} onClick={handlePageChange}>3</button>
+                    <button value={4} className={styles.smallButton} onClick={handlePageChange}>4</button>
+                    <button value={5} className={styles.smallButton} onClick={handlePageChange}>5</button>
+
+                </div>
                 <span className={styles.button}>Te encuentras en la página {page}</span>
         </div>
 

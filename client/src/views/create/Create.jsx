@@ -101,6 +101,7 @@ const Form = () => {
       alert("Verifique los datos ingresados");
     } else {
       dispatch(postVideogame(gameData));
+      alert("Personaje creado correctamente!");
     }
   }
 
@@ -114,63 +115,68 @@ const Form = () => {
 
       <form className={styles.form}>
         <h1 className={styles.title}>Create Videogame</h1>
-        <label className={styles.title} htmlFor="name">Name</label>
-        <input onChange={handleChange} value={gameData.name} name='name' id="name"></input>
-        <br></br>
-        <p className={styles.danger}>{errors.name ? errors.name : null}</p>
+          <div className={styles.divSide}>
+            <div className={styles.individualDiv}>
+              <label className={styles.title} htmlFor="name">Name</label>
+              <input onChange={handleChange} value={gameData.name} name='name' id="name"></input>
+              <br></br>
+              <p className={styles.danger}>{errors.name ? errors.name : null}</p>
 
-        <label htmlFor="description" className={styles.title}>Description</label>
-        <input onChange={handleChange} value={gameData.description} name='description' id="description"></input>
-        <br></br>
-        <p className={styles.danger}>{errors.description ? errors.description : null}</p>
+              <label htmlFor="description" className={styles.title}>Description</label>
+              <input onChange={handleChange} value={gameData.description} name='description' id="description"></input>
+              <br></br>
+              <p className={styles.danger}>{errors.description ? errors.description : null}</p>
 
 
-        <label htmlFor="platforms" className={styles.title}>Platforms</label>
-        {allPlatforms.map((p) => (
-          <div key={p}>
-            <input type='checkbox' name='platforms' value={p}
-            onChange={handleCheckbox} checked={gameData.platforms.includes(p)}
-            id={p}
-            >
-            </input>
-            <label htmlFor={p}>{p}</label>
+              <label htmlFor="platforms" className={styles.title}>Platforms</label>
+              {allPlatforms.map((p) => (
+                <div key={p}>
+                  <input type='checkbox' name='platforms' value={p}
+                  onChange={handleCheckbox} checked={gameData.platforms.includes(p)}
+                  id={p}
+                  >
+                  </input>
+                  <label htmlFor={p}>{p}</label>
+                </div>
+              ))}
+              <br></br>
+              <p className={styles.danger}>{errors.platforms ? errors.platforms : null}</p>
+
+
+              <label htmlFor="image" className={styles.title}>Image</label>
+              <input onChange={handleChange} value={gameData.image} name='image' id="image"></input>
+              <br></br>
+              <p className={styles.danger}>{errors.image ? errors.image : null}</p>
+            </div>
+
+            <div className={styles.individualDiv}>
+              <label htmlFor="releasedate" className={styles.title}>Release Date</label>
+              <input onChange={handleChange} value={gameData.releasedate} name='releasedate' id="releasedate"></input>
+              <br></br>
+              <p className={styles.danger}>{errors.releasedate ? errors.releasedate : null}</p>
+
+              <label htmlFor="rating" className={styles.title}>Rating</label>
+              <input onChange={handleChange} value={gameData.rating} name='rating' id="rating"></input>
+              <br></br>
+              <p className={styles.danger}>{errors.rating ? errors.rating : null}</p>
+
+              <label className={styles.title}>Genres</label>
+              {allGenres.map((g) => (
+                <div key={g.id}>
+                  <input type='checkbox' name='genres' value={g.id}
+                  onChange={handleCheckbox} checked={gameData.genres.includes(g.id)}
+                  id={g.id}
+                  >
+                  </input>
+                  <label htmlFor={g.id}>{g.name}</label>
+                </div>
+              ))}
+              <br></br>
+              <p className={styles.danger}>{errors.genres ? errors.genres : null}</p>
+
+            </div>
           </div>
-        ))}
-        <br></br>
-        <p className={styles.danger}>{errors.platforms ? errors.platforms : null}</p>
-
-
-        <label htmlFor="image" className={styles.title}>Image</label>
-        <input onChange={handleChange} value={gameData.image} name='image' id="image"></input>
-        <br></br>
-        <p className={styles.danger}>{errors.image ? errors.image : null}</p>
-
-
-        <label htmlFor="releasedate" className={styles.title}>Release Date</label>
-        <input onChange={handleChange} value={gameData.releasedate} name='releasedate' id="releasedate"></input>
-        <br></br>
-        <p className={styles.danger}>{errors.releasedate ? errors.releasedate : null}</p>
-
-        <label htmlFor="rating" className={styles.title}>Rating</label>
-        <input onChange={handleChange} value={gameData.rating} name='rating' id="rating"></input>
-        <br></br>
-        <p className={styles.danger}>{errors.rating ? errors.rating : null}</p>
-
-        <label className={styles.title}>Genres</label>
-        {allGenres.map((g) => (
-          <div key={g.id}>
-            <input type='checkbox' name='genres' value={g.id}
-            onChange={handleCheckbox} checked={gameData.genres.includes(g.id)}
-            id={g.id}
-            >
-            </input>
-            <label htmlFor={g.id}>{g.name}</label>
-          </div>
-        ))}
-        <br></br>
-        <p className={styles.danger}>{errors.genres ? errors.genres : null}</p>
-
-        <button className={styles.button} type='submit' onClick={handleSubmit} disabled={(Object.keys(errors).length > 0) ? true : false}>POST</button>
+          <button className={styles.button} type='submit' onClick={handleSubmit} disabled={(Object.keys(errors).length > 0) ? true : false}>POST</button>
       </form>
     </div>
   )

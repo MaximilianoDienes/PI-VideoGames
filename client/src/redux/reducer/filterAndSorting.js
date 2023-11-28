@@ -9,13 +9,13 @@ export const sortVideoGames = (games, relevanceSort, sort) => {
 
     if (sort === "releaseDateE") {
         return sortedGames.sort((g1, g2) => {
-            return new Date(g1.releasedate) - new Date(g2.releasedate);
+            return new Date(g2.releasedate) - new Date(g1.releasedate);
         });
     }
 
     if (sort === "releaseDateL") {
         return sortedGames.sort((g1, g2) => {
-            return new Date(g2.releasedate) - new Date(g1.releasedate);
+            return new Date(g1.releasedate) - new Date(g2.releasedate);
         });
     }
 
