@@ -37,7 +37,6 @@ const Selector = ({allGenres, handleSearchTermReset}) => {
                     if (limit <= filteredGames.length) {
                         dispatch(changePage(newPage))
                     } else {
-                        console.log(page);
                         alert("Esta página se encuentra vacía actualmente, debido a que no hay suficientes videojuegos disponibles por el filtrado elegido.");
                     }
                 } else if (e.target.value === "less") {
