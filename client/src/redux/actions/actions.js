@@ -5,12 +5,12 @@ export const getVideoGames = (name) => {
     return async function (dispatch) {
         try {
             if (name) { // caso hay Name
-                const response = await axios.get(`${import.meta.env.VITE_HOST}:${import.meta.env.VITE_PORT}/videogames?name=${name}`);
+                const response = await axios.get(`${import.meta.env.VITE_HOST}/videogames?name=${name}`);
                 return dispatch({
                     type: GET_VIDEOGAMES,
                     payload: {data: response.data, name: name}})
             } else { // caso normal
-                const response = await axios.get(`${import.meta.env.VITE_HOST}:${import.meta.env.VITE_PORT}/videogames`);
+                const response = await axios.get(`${import.meta.env.VITE_HOST}/videogames`);
                 return dispatch({
                 type: GET_VIDEOGAMES,
                 payload: response.data})    
@@ -24,7 +24,7 @@ export const getVideoGames = (name) => {
 export const getVideoGamesById = (id) => { // detail
     return async function (dispatch) {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_HOST}:${import.meta.env.VITE_PORT}/videogames/${id}`);
+            const response = await axios.get(`${import.meta.env.VITE_HOST}/videogames/${id}`);
             return dispatch({
             type: GET_VIDEOGAMES_BY_ID,
             payload: response.data})
@@ -46,7 +46,7 @@ export const clearVideoGameDetail = () => { // limpia el detail del estado globa
 export const getGenres = () => {
     return async function (dispatch) {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_HOST}:${import.meta.env.VITE_PORT}/genres`);
+            const response = await axios.get(`${import.meta.env.VITE_HOST}/genres`);
             return dispatch({
                 type: GET_GENRES,
                 payload: response.data
@@ -99,7 +99,7 @@ export const sortVideoGames = (sortBy) => {
 export const postVideogame = (gameData) => {
     return async function (dispatch) {
         try {
-            const response = await axios.post(`${import.meta.env.VITE_HOST}:${import.meta.env.VITE_PORT}/videogames`, gameData);
+            const response = await axios.post(`${import.meta.env.VITE_HOST}/videogames`, gameData);
             return dispatch({
                 type: POST_VIDEOGAME,
                 payload: gameData
